@@ -1,0 +1,43 @@
+services:
+  app:
+    build:
+      dockerfile: docker/development/php/Dockerfile
+      context: .
+      args:
+        user: aleksandr_aladin
+        uid: 1000
+    container_name: app
+    restart: unless-stopped
+    volumes:
+    - .:/var/www/api.simple-notes.ru
+    working_dir: /var/www/api.simple-notes.ru
+
+  mysql:
+    image: mysql:8.0docker
+    container_name: mysql
+    restart: unless-stopped
+    volumes:
+    - mysql:/var/lib/mysql
+    ports:
+    - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    restart: unless-stopped
+    volumes:
+    - .:/var/www/api.simple-notes.ru
+    - ./docker/development/nginx/templates:/etc/nginx/templates
+    ports:
+    - 82:80
+    environment:
+      APP_HOST: ${APP_HOST}
+
+volumes:
+  mysql:
+    driver: local
