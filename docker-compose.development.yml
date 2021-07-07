@@ -13,7 +13,7 @@ services:
     working_dir: /var/www/api.simple-notes.ru
 
   mysql:
-    image: mysql:8.0docker
+    image: mysql:8.0
     container_name: mysql
     restart: unless-stopped
     volumes:
