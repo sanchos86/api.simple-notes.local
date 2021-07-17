@@ -29,7 +29,6 @@ class CreateNoteRequest extends FormRequest
             'priority' => ['required', 'string', 'in_array:' . $priorityOptions],
             'description' => ['required', 'string', 'min:3'],
             'date' => ['required', 'date'],
-            'completed' => ['sometimes', 'required', 'boolean'],
             'category_id' => ['required', 'integer', 'exists:categories,id']
         ];
     }

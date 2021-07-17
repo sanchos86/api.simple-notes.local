@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Note;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Models\Note;
 
 class EditNoteRequest extends FormRequest
 {
@@ -23,8 +24,13 @@ class EditNoteRequest extends FormRequest
      */
     public function rules(): array
     {
+        $priorityOptions = Note::getPrioritiesOptions();
         return [
-            //
+            'priority' => ['required', 'string', 'in_array:' . $priorityOptions],
+            'description' => ['required', 'string', 'min:3'],
+            'date' => ['required', 'date'],
+            'completed' => ['required', 'boolean'],
+            'category_id' => ['required', 'integer', 'exists:categories,id']
         ];
     }
 }
