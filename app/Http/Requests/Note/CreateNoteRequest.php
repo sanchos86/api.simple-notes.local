@@ -26,7 +26,7 @@ class CreateNoteRequest extends FormRequest
     {
         $priorityOptions = Note::getPrioritiesOptions();
         return [
-            'priority' => ['required', 'string', 'in_array:' . $priorityOptions],
+            'priority' => ['required', 'string', 'in:' . implode(',', $priorityOptions)],
             'description' => ['required', 'string', 'min:3'],
             'date' => ['required', 'date'],
             'category_id' => ['required', 'integer', 'exists:categories,id']

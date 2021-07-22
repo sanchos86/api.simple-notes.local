@@ -15,7 +15,7 @@ use DateTime;
  * @property string priority
  * @property string description
  * @property DateTime date
- * @property boolean completed
+ * @property int completed
  * @property Category category
  */
 class NoteResource extends JsonResource
@@ -28,12 +28,13 @@ class NoteResource extends JsonResource
      */
     public function toArray($request)
     {
+
         return [
             'id' => $this->id,
             'priority' => $this->priority,
             'description' => $this->description,
             'date' => $this->date,
-            'completed' => $this->completed,
+            'completed' => boolval($this->completed),
             'category' => new CategoryResource($this->category)
         ];
     }

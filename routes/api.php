@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\{CategoryController, NoteController};
 
 /*
 |--------------------------------------------------------------------------
@@ -17,4 +17,12 @@ use App\Http\Controllers\CategoryController;
 Route::group(['prefix' => 'categories'], function () {
     Route::get('/', [CategoryController::class, 'index']);
     Route::post('/', [CategoryController::class, 'store']);
+});
+
+Route::group(['prefix' => 'notes'], function () {
+    Route::get('/', [NoteController::class, 'index']);
+    Route::get('/{note}', [NoteController::class, 'show']);
+    Route::post('/', [NoteController::class, 'store']);
+    Route::put('/{note}', [NoteController::class, 'update']);
+    Route::delete('/{note}', [NoteController::class, 'destroy']);
 });
