@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Category\CreateCategoryRequest;
-use App\Http\Resources\CategoryResource;
+use Exception;
+use App\Models\Category;
 use App\Services\CategoryService;
+use Illuminate\Http\JsonResponse;
+use App\Http\Resources\CategoryResource;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use App\Http\Requests\Category\{CreateCategoryRequest, EditCategoryRequest};
 
 class CategoryController extends Controller
 {
@@ -33,5 +36,30 @@ class CategoryController extends Controller
     {
         $category = $this->categoryService->store($request);
         return new CategoryResource($category);
+    }
+
+    /**
+     * @param EditCategoryRequest $request
+     * @param Category $category
+     * @return CategoryResource
+     */
+    public function update(EditCategoryRequest $request, Category $category): CategoryResource
+    {
+        $category = $this->categoryService->update($request, $category);
+        return new CategoryResource($category);
+    }
+
+    /**
+     * @param Category $category
+     * @return JsonResponse
+     */
+    public function destroy(Category $category): JsonResponse
+    {
+        try {
+            $this->categoryService->destroy($category);
+            return response()->json([], 204);
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
     }
 }

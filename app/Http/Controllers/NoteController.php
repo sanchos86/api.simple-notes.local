@@ -2,21 +2,32 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use App\Models\Note;
-use App\Http\Requests\Note\CreateNoteRequest;
-use App\Http\Requests\Note\EditNoteRequest;
+use App\Services\NoteService;
 use App\Http\Resources\NoteResource;
+use App\Http\Requests\Note\EditNoteRequest;
+use Illuminate\Http\{Request, JsonResponse};
+use App\Http\Requests\Note\CreateNoteRequest;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Http\JsonResponse;
 
 class NoteController extends Controller
 {
+    private $noteService;
+
+    public function __construct(NoteService $noteService)
+    {
+        $this->noteService = $noteService;
+    }
+
     /**
+     * @param Request $request
      * @return AnonymousResourceCollection
      */
-    public function index(): AnonymousResourceCollection
+    public function index(Request $request): AnonymousResourceCollection
     {
-        return NoteResource::collection(Note::paginate());
+        $notes = $this->noteService->getList($request);
+        return NoteResource::collection($notes);
     }
 
     /**
@@ -25,14 +36,7 @@ class NoteController extends Controller
      */
     public function store(CreateNoteRequest $request): NoteResource
     {
-        $params = $request->only([
-            'priority',
-            'description',
-            'date',
-            'category_id'
-        ]);
-        $note = Note::create($params);
-        $note = $note->fresh();
+        $note = $this->noteService->store($request);
         return new NoteResource($note);
     }
 
@@ -52,25 +56,21 @@ class NoteController extends Controller
      */
     public function update(EditNoteRequest $request, Note $note): NoteResource
     {
-        $params = $request->only([
-            'priority',
-            'description',
-            'date',
-            'category_id'
-        ]);
-        $params['completed'] = $request->boolean('completed');
-        $note->update($params);
+        $note = $this->noteService->update($request, $note);
         return new NoteResource($note);
     }
 
     /**
      * @param Note $note
      * @return JsonResponse
-     * @throws
      */
     public function destroy(Note $note): JsonResponse
     {
-        $note->delete();
-        return response()->json([], 204);
+        try {
+            $this->noteService->destroy($note);
+            return response()->json([], 204);
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
     }
 }
