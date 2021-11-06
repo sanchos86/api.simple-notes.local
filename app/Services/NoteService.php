@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Note;
 use Illuminate\Http\Request;
+use App\NoteSearch\NoteSearch;
 use Illuminate\Pagination\LengthAwarePaginator;
 use App\Http\Requests\Note\{CreateNoteRequest, EditNoteRequest};
 
@@ -11,8 +12,9 @@ class NoteService
 {
     public function getList(Request $request): LengthAwarePaginator
     {
+        $query = NoteSearch::apply($request);
         $perPage = is_numeric($request->query('per-page')) ? intval($request->query('per-page')) : null;
-        return Note::paginate($perPage);
+        return $query->paginate($perPage);
     }
 
     /**
