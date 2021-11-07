@@ -29,6 +29,15 @@ class CategoryController extends Controller
     }
 
     /**
+     * @param Category $category
+     * @return CategoryResource
+     */
+    public function show(Category $category): CategoryResource
+    {
+        return new CategoryResource($category);
+    }
+
+    /**
      * @param CreateCategoryRequest $request
      * @return CategoryResource
      */
