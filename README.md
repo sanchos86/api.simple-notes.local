@@ -1,7 +1,5 @@
 # api.simple-notes.local
 
-[Base url](https://frozen-cliffs-54998.herokuapp.com/)
-
 ### Features
 
 - [extensible search](https://github.com/sanchos86/api.simple-notes.local/tree/master/app/NoteSearch)
